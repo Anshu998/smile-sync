@@ -7,6 +7,7 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
+  CardDescription,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { setCredentials } from "../app/slices/authSlice";
 import { useLoginMutation } from "../app/slices/userApiSlice";
 import { toast } from "react-toastify";
+import loginImage from "../assets/images/login.png";
 const Login = () => {
   const {
     register,
@@ -32,73 +34,92 @@ const Login = () => {
       navigate("/");
       toast.success("Login Successfull");
     } catch (error) {
-      toast.error("Invalid Email or Password");
+      toast.error(error.data.message || "Login failed try again later");
     }
   };
 
+  // const placeholder = false
   return (
-    <div className=" flex items-center h-screen justify-center ">
-      <Card className="w-1/4">
-        <CardHeader>
-          <CardTitle className="text-center">Login to your account</CardTitle>
-        </CardHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                {...register("email", {
-                  required: "Enter your email",
-                  validate: {
-                    matchPattern: (value) =>
-                      /([\w\.\-_]+)?\w+@[\w-_]+(\.\w+){1,}/gim.test(value) ||
-                      "Invalid email address",
-                  },
-                })}
-                placeholder="Enter your email"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4 sm:px-6 lg:px-8">
+      <div className="flex w-full max-w-4xl bg-white border-red-500 rounded-lg shadow-lg overflow-hidden">
+        <div className="hidden md:block flex-1 bg-black">
+          <img
+            src={loginImage}
+            alt="Registration illustration"
+            width={600}
+            height={800}
+            className="object-cover w-full opacity-80 h-full"
+          />
+        </div>
+        <Card className="flex-1 flex flex-col justify-center  shadow-none">
+          <CardHeader>
+            <CardTitle>Login to your Account</CardTitle>
+            <CardDescription>Enter your details to login</CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  {...register("email", {
+                    required: "Email is required",
+                    validate: {
+                      matchPattern: (value) =>
+                        /([\w\.\-_]+)?\w+@[\w-_]+(\.\w+){1,}/gim.test(value) ||
+                        "Invalid email address",
+                    },
+                  })}
+                  placeholder="Enter your email"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
 
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                {...register("password", { required: "Password is required" })}
-                placeholder="Enter your password"
-              />
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-          </CardContent>
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                  placeholder="Enter your password"
+                />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+            </CardContent>
 
-          <CardFooter className="flex flex-col  space-y-4">
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? "Submitting..." : "Login"}
-            </Button>
-
-            <p className="text-sm text-gray-500">
-              Don&apos;t have an account?{" "}
-              <span
-                className="text-blue-500 cursor-pointer"
-                onClick={() => navigate("/register")}
+            <CardFooter className="flex flex-col  space-y-4">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-mainCustomColor hover:bg-teal-600"
               >
-                Signup
-              </span>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
+                {isLoading ? "Submitting..." : "Login"}
+              </Button>
+
+              <p className="text-sm text-gray-500">
+                Don&apos;t have an account?{" "}
+                <span
+                  className="text-blue-500 cursor-pointer"
+                  onClick={() => navigate("/register")}
+                >
+                  Signup
+                </span>
+              </p>
+            </CardFooter>
+          </form>
+        </Card>
+      </div>
     </div>
   );
 };

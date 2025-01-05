@@ -10,4 +10,6 @@ const DentistSchema = new mongoose.Schema({
   approved: { type: Boolean, default: false },
 },{timestamps:true});
 
-module.exports = mongoose.model("Dentist", DentistSchema);
+const Dentist = mongoose.model("Dentist", DentistSchema);
+
+export default Dentist;

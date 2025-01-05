@@ -1,20 +1,24 @@
-
 import { ToastContainer, Bounce } from "react-toastify";
-import { Route, Routes, useLocation } from "react-router-dom";
-import { Login, Register, Activate } from "./components";
-import { HomePage } from "./pages";
+import { Outlet, useLocation } from "react-router-dom";
+import { Header, Footer } from "./components";
 function App() {
   const location = useLocation();
-  const isLogin = location.pathname === "/login" || "/register";
+  const isAuthPath =
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname === "/register-success" ||
+    location.pathname === "/activate";
   return (
     <>
-      {!isLogin && <Header />}
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/activate" element={<Activate />} />
-        <Route path="/" element={<HomePage />} />
-      </Routes>
+      {!isAuthPath && <Header />}
+      <div className="min-h-screen flex flex-wrap content-between">
+        <div className="w-full block">
+          <main>
+            <Outlet />
+          </main>
+        </div>
+      </div>
+      {!isAuthPath && <Footer />}
 
       <ToastContainer
         position="top-right"

@@ -94,6 +94,7 @@ const activateUser = asyncHandler(async (req, res, next) => {
       name,
       email,
       password,
+      isVerified : true
     });
 
     res.status(201).json({
