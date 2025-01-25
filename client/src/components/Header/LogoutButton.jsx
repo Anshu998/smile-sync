@@ -23,7 +23,7 @@ const LogoutButton = () => {
     <Button
       onClick={handleLogout}
       disabled={isLoading}
-      className="bg-mainCustomColor hover:bg-teal-600"
+      className="p-1 bg-white text-black w-full group-hover:bg-transparent group-hover:cursor-pointer font-normal "
     >
       {isLoading ? "Logging Out..." : "logout"}
     </Button>

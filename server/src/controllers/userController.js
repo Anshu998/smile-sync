@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import sendMail from "../utils/sendMail.js";
 import createActivationToken from "../utils/activation.js";
 import { sendToken } from "../utils/jwt.js";
+import cloudinary from "cloudinary";
 
 const registerUser = asyncHandler(async (req, res, next) => {
   try {
@@ -94,7 +95,7 @@ const activateUser = asyncHandler(async (req, res, next) => {
       name,
       email,
       password,
-      isVerified : true
+      isVerified: true,
     });
 
     res.status(201).json({
@@ -102,7 +103,7 @@ const activateUser = asyncHandler(async (req, res, next) => {
       message: "User has been successfully created",
     });
   } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
+    return next(new ErrorHandler(error.message, 500));
   }
 });
 
@@ -137,7 +138,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
       user,
     });
   } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
+    return next(new ErrorHandler(error.message, 500));
   }
 });
 
@@ -156,8 +157,117 @@ const logoutUser = asyncHandler(async (req, res, next) => {
       message: "User logged out successfully",
     });
   } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
+    return next(new ErrorHandler(error.message, 500));
   }
 });
 
-export { registerUser, loginUser, logoutUser, activateUser };
+const updateUserProfile = asyncHandler(async (req, res, next) => {
+  try {
+    const { name, email, phone, dob, address, medicalHistory } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        name,
+        email,
+        phone,
+        dob,
+        address,
+        medicalHistory,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    if (!user) {
+      return next(new ErrorHandler("User was not found", 400));
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated Successfully",
+      user,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+const getUserInfo = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return next(new ErrorHandler("User is not found", 400));
+    }
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+const changePassword = asyncHandler(async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findById(req.user._id).select("+password");
+    const passwordMatch = user.comparePassword(currentPassword);
+    if (!passwordMatch) {
+      return next(new ErrorHandler("Password is incorrect"));
+    }
+    if (currentPassword === newPassword) {
+      return next(new ErrorHandler("New password is already used", 400));
+    }
+    // Now update the old password with new password
+    user.password = newPassword;
+    await user.save();
+    return res
+      .status(200)
+      .json({ success: true, message: "Password updated successfully" });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+const updateUserAvatar = asyncHandler(async (req, res, next) => {
+  try {
+    const { image } = req.body;
+
+    if (!image) {
+      return next(new ErrorHandler("No image provided", 400));
+    }
+
+    // Upload the image to Cloudinary
+    const result = await cloudinary.v2.uploader.upload(image, {
+      folder: "avatars", // Optional: Save images in a specific folder
+      resource_type: "auto", // Automatically detect the file type
+    });
+    const uploadedImage = {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+
+    // Update user profile with the image
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { avatar: uploadedImage },
+      { runValidators: true, new: true }
+    ).lean();
+
+    // Return the Cloudinary URL of the uploaded image
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  activateUser,
+  updateUserProfile,
+  changePassword,
+  updateUserAvatar,
+  getUserInfo,
+};

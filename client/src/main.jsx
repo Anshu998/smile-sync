@@ -4,14 +4,20 @@ import "./index.css";
 import App from "./App.jsx";
 import store from "./app/store";
 import { Provider } from "react-redux";
-import {
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Login, Register, Activate } from "./components";
-import { HomePage } from "./pages";
-import AuthLayout from './routes/AuthLayout'
-import RegistrationSuccessPage from "./pages/RegistrationSuccessPage";
+import {
+  HomePage,
+  AboutPage,
+  ServicesPage,
+  ProfilePage,
+  RegistrationSuccessPage,
+  BookAppointmentPage,
+  AppointmentPage,
+  FindDoctorsPage
+} from "./pages";
+import AuthLayout from "./routes/AuthLayout";
+
 
 const router = createBrowserRouter([
   {
@@ -21,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage />,
+      },
+      {
+        path: "/about",
+        element: <AboutPage />,
       },
       {
         path: "/login",
@@ -54,14 +64,47 @@ const router = createBrowserRouter([
           </AuthLayout>
         ),
       },
+      {
+        path: "/services",
+        element: <ServicesPage />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <AuthLayout authentication={true}>
+            <ProfilePage />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/book-appointment",
+        element: (
+          <AuthLayout authentication={true}>
+            <BookAppointmentPage />
+          </AuthLayout>
+        ),
+      },
+
+      {
+        path: "/all-appointments",
+        element: (
+          <AuthLayout authentication={true}>
+            <AppointmentPage />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/all-doctors",
+        element: <FindDoctorsPage />,
+      },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  // <StrictMode>
-  <Provider store={store}>
-    <RouterProvider router={router}/>
-  </Provider>
-  // </StrictMode>
+  <StrictMode>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  </StrictMode>
 );

@@ -1,15 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
 import heroImage from "../../assets/images/heroImage.jpg";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function HeroSectionSimpleCentred() {
+  const userData = useSelector((state) =>state.auth.isAuthenticated)
+  // alert(userData)
   return (
     <>
       {/* Hero Section */}
       <div className="relative w-full h-screen overflow-hidden">
         {/* Background Image with Overlay */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-fixed"
+          className="absolute bg-no-repeat inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${heroImage})`, // Replace with your image path
             filter: "brightness(0.3)", // Darkens the image for better contrast
@@ -18,14 +22,14 @@ export default function HeroSectionSimpleCentred() {
 
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
+        <div className="relative z-[2] flex flex-col items-center justify-center h-full text-center text-white px-4">
           {/* Announcement Banner */}
           <div className="mb-4">
             <a
               className="inline-flex items-center gap-x-2 border text-sm p-1 ps-3 rounded-full transition bg-transparent text-white hover:bg-gray-200 hover:text-teal-700"
               href="#"
             >
-              PRO release - Join the Waitlist
+              Join No.1 dental facility
               <span className="py-1.5 px-2.5 inline-flex justify-center items-center gap-x-2 rounded-full bg-muted-foreground/15 font-semibold text-sm">
                 <svg
                   className="flex-shrink-0 w-4 h-4"
@@ -58,16 +62,20 @@ export default function HeroSectionSimpleCentred() {
 
           {/* Buttons */}
           <div className="flex gap-3 justify-center">
+            <Link to={userData? "/new-appointment": "/register"}>
             <Button size={"lg"} className="bg-teal-500 hover:bg-teal-600">
               Book Now
             </Button>
+            </Link>
+            <Link to={'/about'}>
             <Button
               size={"lg"}
               variant={"outline"}
               className="transition-all duration-150 bg-transparent text-white hover:border-white"
-            >
+              >
               Learn more
             </Button>
+              </Link>
           </div>
 
           {/* Customer Reviews */}

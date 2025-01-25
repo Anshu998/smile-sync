@@ -28,7 +28,21 @@ const userSchema = new mongoose.Schema(
     },
     isVerified: {
       type: Boolean,
-      default:false
+      default: false,
+    },
+    phone: {
+      type: Number,
+      minlength: [10, "Phone Number must be 10 digits"],
+      unique: true,
+    },
+    address: {
+      type: String,
+    },
+    dob: {
+      type: Date,
+    },
+    medicalHistory: {
+      type: String,
     },
     role: {
       type: String,

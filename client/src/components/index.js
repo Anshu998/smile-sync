@@ -10,6 +10,8 @@ import Features from "./Features";
 import Testimonials from './Testimonials'
 import About from "./About";
 import Contact from "./Contact";
+import CallToAction from './CallToAction'
+import FAQ from "./FAQ";
 export {
   Login, 
   Register,
@@ -22,5 +24,7 @@ export {
   Testimonials,
   About,
   Contact,
-  LogoutButton
+  FAQ,
+  LogoutButton,
+  CallToAction
 }

@@ -20,13 +20,13 @@ export default function RegistrationSuccessPage() {
             </Link>
           </CardFooter>
         </Card>
-        <div className="hidden md:block flex-1">
+        <div className="hidden md:block flex-1 bg-black">
           <img
             src="https://cdn.pixabay.com/photo/2022/06/20/10/41/registration-7273476_1280.png"
             alt="Success illustration"
             width={600}
             height={800}
-            className="object-cover w-full h-full"
+            className="object-cover w-full h-full opacity-80"
           />
         </div>
       </div>

@@ -1,31 +1,35 @@
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import React from "react";
-import { useSelector } from "react-redux";
 import { LogoutButton } from "../index";
-export default function Component() {
-  const authStatus = useSelector(state => state.auth.isAuthenticated)
-  // console.log(authStatus)
-  const [headerBg, setHeaderBg] = React.useState("bg-transparent");
+import HeaderDropdown from "./HeaderDropdown";
+import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { useSelector } from "react-redux";
 
-  // Scroll event to change header background
+
+export default function Component() {
+  const location = useLocation();
+  // const authStatus = false;
+  const [headerBg, setHeaderBg] = React.useState("bg-transparent");
+  const authStatus = useSelector((state) => state.auth.isAuthenticated);
   React.useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 100) {
-        setHeaderBg("bg-white"); // Solid background after scroll
+        setHeaderBg("bg-white"); // Solid background after scrolling
+      } else if (location.pathname === "/") {
+        setHeaderBg("bg-transparent"); // Transparent only on home page
       } else {
-        setHeaderBg("bg-transparent"); // Transparent background while in hero section
+        setHeaderBg("bg-white"); // Solid background for other pages
       }
     };
 
-    // To set the b
-    // handleScroll()
     window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Set the background immediately on page load
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [location.pathname]); // Re-run when the path changes
   const navItems = [
     {
       name: "Home",
@@ -39,13 +43,13 @@ export default function Component() {
     },
     {
       name: "Services",
-      slug: "/Services",
-      active: true,
+      slug: "/services",
+      active: !authStatus,
     },
     {
       name: "Find Doctors",
       slug: "/all-doctors",
-      active: !authStatus,
+      active: true,
     },
     {
       name: "Login",
@@ -54,19 +58,14 @@ export default function Component() {
     },
     {
       name: "My appointments",
-      slug: "/all-posts",
-      active: authStatus,
-    },
-    {
-      name: "History",
-      slug: "/add-post",
+      slug: "/all-appointments",
       active: authStatus,
     },
   ];
 
   return (
     <header
-      className={`flex top-0 z-20 left-0 h-20 w-full shrink-0 items-center px-4  md:px-6   ${
+      className={`flex top-0 z-20 left-0 h-20 w-full shrink-0 items-center px-4 transition-colors duration-300  md:px-6   ${
         headerBg === "bg-transparent"
           ? "absolute bg-transparent"
           : "sticky bg-white shadow-md"
@@ -77,6 +76,11 @@ export default function Component() {
         <span className="sr-only">Smile Sync</span>
       </NavLink>
       <Sheet>
+        <DialogTitle className="sr-only">Navigation Menu</DialogTitle>{" "}
+        {/* Add a visually hidden title */}
+        <DialogDescription className="sr-only">
+          Use the navigation menu to access different sections of the website.
+        </DialogDescription>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="lg:hidden ml-auto">
             <MenuIcon className="h-6 w-6" />
@@ -101,11 +105,13 @@ export default function Component() {
               ) : null
             )}
 
-            <Link to={'/register'}>
-            <Button className="bg-mainCustomColor hover:bg-teal-700">
-
-              Book Appointment
-            </Button>
+            <Link
+              to={authStatus ? "/book-appointment" : "/register"}
+              className="mx-auto"
+            >
+              <Button className="bg-mainCustomColor hover:bg-teal-700 border">
+                Book Appointment
+              </Button>
             </Link>
           </div>
         </SheetContent>
@@ -117,7 +123,7 @@ export default function Component() {
             <NavLink
               key={item.name}
               to={item.slug}
-              className={`group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-base font-medium transition-colors hover:text-teal-700 focus:bg-gray-50 focus:text-teal-500 focus:outline-none disabled:pointer-events-none disabled:opacity-50 ${
+              className={`group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-base font-medium transition-colors hover:text-teal-700 focus:text-teal-500 focus:outline-none disabled:pointer-events-none disabled:opacity-50 ${
                 headerBg === "bg-transparent"
                   ? "text-white"
                   : "sticky bg-white hover:bg-gray-50"
@@ -127,20 +133,15 @@ export default function Component() {
             </NavLink>
           ) : null
         )}
-        {
-          authStatus && (
+        {authStatus && (
+          <HeaderDropdown/>
+        )}
         <div className="ml-10">
-          <LogoutButton/>
-        </div>
-          )
-        }
-        <div className="ml-10">
-        <Link to={'/register'}>
+          <Link to={authStatus ? "book-appointment" : "register"}>
             <Button className="bg-mainCustomColor hover:bg-teal-700">
-
               Book Appointment
             </Button>
-            </Link>
+          </Link>
         </div>
       </nav>
     </header>
