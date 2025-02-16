@@ -10,9 +10,11 @@ import {
   Register,
   Activate,
   DentistRegistrationForm,
+  DentistAppointments,
   AdminDashboard,
   AdminAllUsers,
   AdminAllDentists,
+  AdminAddDentist
 } from "./components";
 import {
   HomePage,
@@ -25,6 +27,7 @@ import {
   FindDoctorsPage,
   DentistDashboardPage,
   AdminDashboardPage,
+  SingleDentistPage
 } from "./pages";
 import AuthLayout from "./routes/AuthLayout";
 import AdminLayout from "./routes/AdminLayout";
@@ -109,6 +112,14 @@ const router = createBrowserRouter([
         element: <FindDoctorsPage />,
       },
       {
+        path: "/dentist/:id",
+        element: (
+          <AuthLayout authentication={true}>
+            <SingleDentistPage />,
+          </AuthLayout>
+        )
+      },
+      {
         path: "/register-as-dentist",
         element: (
           <AuthLayout authentication={true}>
@@ -125,14 +136,19 @@ const router = createBrowserRouter([
       {
         index: "admin",
         element: (
-          
-            <AdminDashboard />
+            <AdminLayout>
+              <AdminDashboard />
+            </AdminLayout>
           
         ),
       }, // Default admin dashboard
       {
         path: "all-users",
-        element: <AdminAllUsers />,
+        element: (
+        <AdminLayout>
+          <AdminAllUsers />
+        </AdminLayout>
+      ),
       }, //  admin All Users Management
       {
         path: "all-appointments",
@@ -140,7 +156,19 @@ const router = createBrowserRouter([
       }, // Default admin dashboard
       {
         path: "all-dentists",
-        element: <AdminAllDentists />,
+        element: (
+          <AdminLayout>
+            <AdminAllDentists />
+          </AdminLayout>
+        ),
+      }, // Default admin dashboard
+      {
+        path: "add-dentist",
+        element: (
+          <AdminLayout>
+            <AdminAddDentist />
+          </AdminLayout>
+        ),
       }, // Default admin dashboard
     ],
   },
@@ -153,6 +181,14 @@ const router = createBrowserRouter([
         element: (
           <DentistLayout>
             <AdminDashboard />
+          </DentistLayout>
+        ),
+      }, // Default Dentist Dashboard page
+      {
+        path: "appointments",
+        element: (
+          <DentistLayout>
+            <DentistAppointments />
           </DentistLayout>
         ),
       }, // Default Dentist Dashboard page
