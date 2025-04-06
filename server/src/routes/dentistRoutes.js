@@ -10,11 +10,14 @@ dentistRouter.post(
   DentistController.registerDentist
 );
 dentistRouter.get("/", DentistController.fetchAllDentist);
+dentistRouter.get('/appointments', isAuthenticated, authorizeRoles('dentist'), DentistController.fetchAppointments);
+dentistRouter.get('/patients', isAuthenticated, authorizeRoles('dentist'), DentistController.getPatientsData)
 
 dentistRouter.get("/:id", DentistController.fetchSingleDentist);
 
 dentistRouter.put("/verify/:id", isAuthenticated, authorizeRoles('admin'), DentistController.verifyDentist);
 
 dentistRouter.put("/:id", isAuthenticated, authorizeRoles('dentist'), DentistController.manageAvailability);
+
 
 export default dentistRouter;

@@ -1,5 +1,6 @@
 import { asyncHandler } from "../middlewares/asyncHandler.js";
 import Dentist from "../models/dentistModel.js";
+import Appointment from "../models/appointmentModel.js";
 import User from "../models/userModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 class DentistController {
@@ -123,14 +124,14 @@ class DentistController {
         return next(new ErrorHandler("User not found", 404));
       }
       res.status(200).json({
-        success:true,
-        message: "Dentist Verified Successfully"
-      })
+        success: true,
+        message: "Dentist Verified Successfully",
+      });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
   });
-  
+
   static manageAvailability = asyncHandler(async (req, res, next) => {
     // find the dentist with his id and manage his working hours from the dentist model
     const dentistId = req.params.id;
@@ -152,6 +153,120 @@ class DentistController {
       message: "Dentist availability updated successfully.",
       data: updatedDentist,
     });
+  });
+
+  static fetchAppointments = asyncHandler(async (req, res, next) => {
+    try {
+      // Find dentist by user ID
+      const dentist = await Dentist.findOne({ user: req.user._id }).populate(
+        "user",
+        "name email"
+      ); // Populate basic user info
+
+      if (!dentist) {
+        return next(new ErrorHandler("Dentist not found", 404));
+      }
+
+      // Get query parameters for filtering
+      const { status, dateFrom, dateTo } = req.query;
+
+      // Build query object
+      const query = { dentist: dentist._id };
+
+      // Add status filter if provided
+      if (
+        status &&
+        ["Pending", "Confirmed", "Completed", "Cancelled"].includes(status)
+      ) {
+        query.status = status;
+      }
+
+      // Add date range filter if provided
+      if (dateFrom || dateTo) {
+        query.date = {};
+        if (dateFrom) query.date.$gte = new Date(dateFrom);
+        if (dateTo) query.date.$lte = new Date(dateTo);
+      }
+
+      // Find appointments with population of related data
+      const appointments = await Appointment.find(query)
+        .populate({
+          path: "user",
+          select: "name email phone", // Only get necessary user fields
+        })
+        .populate({
+          path: "dentist",
+          select: "specialization qualifications", // Dentist professional info
+          populate: {
+            path: "user",
+            select: "name", // Dentist's name from User model
+          },
+        })
+        .sort({ date: 1, timeSlot: 1 }); // Sort by date and time
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointments fetched successfully",
+        count: appointments.length,
+        appointments,
+      });
+    } catch (error) {
+      return next(
+        new ErrorHandler(
+          error.message || "Failed to fetch appointments",
+          error.statusCode || 500
+        )
+      );
+    }
+  });
+
+  static getPatientsData = asyncHandler(async (req, res, next) => {
+    try {
+      const dentistId = req.user._id; // Assuming dentist is logged in and user object is attached to req
+
+      // Find all appointments for this dentist
+      const appointments = await Appointment.find({ dentist: dentistId })
+        .populate({
+          path: "user",
+          select: "name email phone avatar", // Select only necessary fields
+        })
+        .lean();
+
+      // Get unique patients by filtering duplicates
+      const uniquePatientsMap = new Map();
+
+      appointments.forEach((appointment) => {
+        if (appointment.user) {
+          // Use patient ID as the map key to ensure uniqueness
+          if (!uniquePatientsMap.has(appointment.user._id.toString())) {
+            uniquePatientsMap.set(appointment.user._id.toString(), {
+              _id: appointment.user._id,
+              name: appointment.user.name,
+              email: appointment.user.email,
+              phone: appointment.user.phone || "Not provided",
+              avatar: appointment.user.avatar?.url || null,
+              lastAppointment: appointment.date, // Store the most recent appointment date
+            });
+          }
+        }
+      });
+
+      // Convert map values to array
+      const uniquePatients = Array.from(uniquePatientsMap.values());
+
+      // Sort patients by most recent appointment
+      uniquePatients.sort(
+        (a, b) => new Date(b.lastAppointment) - new Date(a.lastAppointment)
+      );
+
+      res.status(200).json({
+        success: true,
+        count: uniquePatients.length,
+        patients: uniquePatients,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
   });
 }
 

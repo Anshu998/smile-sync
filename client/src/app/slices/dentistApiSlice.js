@@ -32,6 +32,20 @@ export const dentistApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    fetchDentistAppointments: builder.query({
+      query: () => ({
+        url: `${dentist_url}/appointments`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+    getPatientsData: builder.query({
+      query: () => ({
+        url: `${dentist_url}/patients`,
+        method: "GET",
+        credentials: "include",
+      }),
+    })
   }),
 });
 
@@ -40,4 +54,6 @@ export const {
   useGetAllDentistsQuery,
   useVerifyDentistMutation,
   useGetSingleDentistQuery,
+  useFetchDentistAppointmentsQuery,
+  useGetPatientsDataQuery
 } = dentistApiSlice;
