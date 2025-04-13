@@ -204,6 +204,8 @@ function DentistAppointments() {
                           onReject={onReject}
                           key={appointment._id}
                           appointment={appointment}
+                          changeLoading ={changeLoading}
+                          // rejectLoading ={rejectLoading}
                         />
                       ))}
                   </div>
