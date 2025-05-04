@@ -14,14 +14,6 @@ import { useFetchAllAppointmentsQuery } from "@/app/slices/adminApiSlice";
 import { ScrollArea } from "../ui/scroll-area";
 
 function AdminAllAppointments() {
-  // const [appointments, setAppointments] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [filter, setFilter] = useState("All");
-  // const [searchTerm, setSearchTerm] = useState("");
-  // const [selectedAppointment, setSelectedAppointment] = useState(null);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const { data, isLoading } = useFetchAllAppointmentsQuery();
-  // const appointments = data?.appointments;
 
   const [filter, setFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");

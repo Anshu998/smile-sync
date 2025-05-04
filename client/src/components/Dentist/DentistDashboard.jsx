@@ -17,49 +17,6 @@ import { useGetPatientsDataQuery } from "@/app/slices/dentistApiSlice";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 
-// // Mock data
-// const mockAppointments = [
-//   {
-//     id: 1,
-//     patientName: "John Doe",
-//     date: "2024-03-27",
-//     time: "09:00",
-//     type: "Regular Checkup",
-//     status: "confirmed",
-//   },
-//   {
-//     id: 2,
-//     patientName: "Jane Smith",
-//     date: "2024-03-27",
-//     time: "10:30",
-//     type: "Root Canal",
-//     status: "confirmed",
-//   },
-//   {
-//     id: 3,
-//     patientName: "Mike Johnson",
-//     date: "2024-03-28",
-//     time: "14:00",
-//     type: "Cleaning",
-//     status: "pending",
-//   },
-//   {
-//     id: 4,
-//     patientName: "Sarah Williams",
-//     date: "2024-03-29",
-//     time: "11:00",
-//     type: "Consultation",
-//     status: "confirmed",
-//   },
-//   {
-//     id: 5,
-//     patientName: "Robert Brown",
-//     date: "2024-03-27",
-//     time: "15:30",
-//     type: "Filling",
-//     status: "confirmed",
-//   },
-// ];
 
 // StatsCard Component
 function StatsCard({
