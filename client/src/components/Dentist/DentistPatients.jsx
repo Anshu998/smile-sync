@@ -79,10 +79,6 @@ export default function DentistPatients() {
             Manage and view your patient records
           </p>
         </div>
-        <Button className="bg-teal-600 flex items-center gap-2">
-          <UserPlus className="h-4 w-4" />
-          Add New Patient
-        </Button>
       </div>
 
       <div className="relative">

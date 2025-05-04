@@ -31,7 +31,7 @@ const Sidebar = () => {
     { icon: CalendarClock, label: "Appointments", href: "/admin/all-appointments" },
     { icon: Stethoscope, label: "Dentists", href: "/admin/all-dentists" },
     { icon: Wallet2Icon , label: "Payments", href: "/admin/all-payments" },
-    { icon: Settings, label: "Settings", href: "/settings" },
+    // { icon: Settings, label: "Settings", href: "/settings" },
   ];
 
   return (
