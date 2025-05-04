@@ -9,10 +9,10 @@ import { useGetPatientsDataQuery } from "@/app/slices/dentistApiSlice";
 export default function DentistPatients() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // const [patients, setPatients] = useState(mockPatients);
+
   const { data: realPatients, isLoading } = useGetPatientsDataQuery();
   const patients = Array.isArray(realPatients?.data) ? realPatients.data : [];
-  // const 
+
 
   const filteredPatients = patients?.filter(
     (patient) =>
