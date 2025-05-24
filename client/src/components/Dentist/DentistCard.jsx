@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/tooltip";
 import { format } from "date-fns";
 
-
 export default function DentistCard({ dentist }) {
   const getInitials = (name) => {
     return name
@@ -39,18 +38,42 @@ export default function DentistCard({ dentist }) {
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
     return age;
   };
 
   const formatWorkingDays = (days) => {
-    if (days.length === 5 && days.every((day, i) => day === ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][i])) {
+    if (
+      days.length === 5 &&
+      days.every(
+        (day, i) =>
+          day === ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"][i]
+      )
+    ) {
       return "Mon - Fri";
     }
-    return days.map(day => day.slice(0, 3)).join(", ");
+    return days.map((day) => day.slice(0, 3)).join(", ");
   };
+
+  function formatTime(time24) {
+    const [hour, minute] = time24.split(":");
+    const date = new Date();
+    date.setHours(hour);
+    date.setMinutes(minute);
+
+    return date
+      .toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })
+      .toLowerCase(); // Remove .toLowerCase() if you want 'PM' instead of 'pm'
+  }
 
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg bg-card">
@@ -69,7 +92,7 @@ export default function DentistCard({ dentist }) {
               {getInitials(dentist.user.name)}
             </AvatarFallback>
           </Avatar>
-          
+
           <div className="flex-1 space-y-2">
             <div className="flex justify-between items-start">
               <div>
@@ -79,9 +102,12 @@ export default function DentistCard({ dentist }) {
                 {/* <p className="text-sm text-muted-foreground">
                   Age: {getAge(dentist.user.dob)} years
                 </p> */}
-              <Badge variant="outline" className="text-primary border-primary">
-                NMC: {dentist.nmcNumber}
-              </Badge>
+                <Badge
+                  variant="outline"
+                  className="text-primary border-primary"
+                >
+                  NMC: {dentist.nmcNumber}
+                </Badge>
               </div>
             </div>
 
@@ -91,7 +117,9 @@ export default function DentistCard({ dentist }) {
                   <TooltipTrigger>
                     <div className="flex items-center gap-1.5">
                       <Stethoscope className="h-4 w-4 text-primary" />
-                      <span className="capitalize text-sm">{dentist.specialization}</span>
+                      <span className="capitalize text-sm">
+                        {dentist.specialization}
+                      </span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>Specialization</TooltipContent>
@@ -101,7 +129,9 @@ export default function DentistCard({ dentist }) {
                   <TooltipTrigger>
                     <div className="flex items-center gap-1.5">
                       <Star className="h-4 w-4 text-amber-500" />
-                      <span className="text-sm">{dentist.experience} years exp.</span>
+                      <span className="text-sm">
+                        {dentist.experience} years exp.
+                      </span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>Years of Experience</TooltipContent>
@@ -111,7 +141,9 @@ export default function DentistCard({ dentist }) {
                   <TooltipTrigger>
                     <div className="flex items-center gap-1.5">
                       <Clock className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm">{dentist.slotDuration} min slot</span>
+                      <span className="text-sm">
+                        {dentist.slotDuration} min slot
+                      </span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>Consultation Duration</TooltipContent>
@@ -131,14 +163,19 @@ export default function DentistCard({ dentist }) {
         <Separator className="my-4" />
 
         <div className="space-y-3">
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg">
-              <Clock className="h-4 w-4 text-primary" />
-              <span>{dentist.workingHours.startTime} - {dentist.workingHours.endTime}</span>
-            </div>
-            <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg">
-              <Calendar className="h-4 w-4 text-primary" />
-              <span>{formatWorkingDays(dentist.workingHours.days)}</span>
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2 justify-between text-sm">
+              <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg whitespace-nowrap">
+                <Clock className="h-4 w-4 text-primary" />
+                <span>
+                  {formatTime(dentist.workingHours.startTime)} -{" "}
+                  {formatTime(dentist.workingHours.endTime)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg whitespace-nowrap">
+                <Calendar className="h-4 w-4 text-primary" />
+                <span>{formatWorkingDays(dentist.workingHours.days)}</span>
+              </div>
             </div>
           </div>
 

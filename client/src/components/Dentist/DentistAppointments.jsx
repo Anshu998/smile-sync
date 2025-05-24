@@ -60,11 +60,10 @@ function DentistAppointments() {
         appointmentId: id,
         reason: "Dentist cancelled the appointment",
       }).unwrap();
+      console.log(response);
       if (response.success) {
-        toast.success({
-          title: "Appointment Cancelled",
-          description: "Your appointment has been successfully cancelled.",
-        });
+        toast.success("Appointment has been cancelled");
+        refetch();
       }
     } catch (error) {
       toast.error(error.message);

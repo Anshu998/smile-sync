@@ -90,7 +90,7 @@ const BookingForm = ({ mockDentist }) => {
     useBookAppointmentMutation();
   const { id: dentistId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     const currentTime = new Date();
     const selectedDate = form.getValues("date");
@@ -123,12 +123,13 @@ const BookingForm = ({ mockDentist }) => {
       if (response.success) {
         form.reset();
         toast.success("Appointment Booked Successfully");
-        navigate('/my-appointments')
+        navigate("/my-appointments");
+        window.location.reload();
       }
     } catch (error) {
       toast.error(error.message);
-    }finally{
-      setDentistAvailable(false)
+    } finally {
+      setDentistAvailable(false);
     }
   };
 
@@ -266,7 +267,7 @@ const BookingForm = ({ mockDentist }) => {
               </Button>
             ) : (
               <Button
-              type="button"
+                type="button"
                 onClick={onCheckAvailability}
                 className="w-full bg-mainCustomColor hover:bg-teal-600 text-white"
               >

@@ -49,6 +49,21 @@ export default function SingleDentistPage() {
     );
   }
 
+  function formatTime(time24) {
+    const [hour, minute] = time24.split(":");
+    const date = new Date();
+    date.setHours(hour);
+    date.setMinutes(minute);
+
+    return date
+      .toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })
+      .toLowerCase(); // Remove .toLowerCase() if you want 'PM' instead of 'pm'
+  }
+
   return (
     <div className="min-h-screen bg-gray-50/50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
@@ -125,7 +140,7 @@ export default function SingleDentistPage() {
                       <p className="text-sm text-muted-foreground">
                         {dentist?.workingHours?.startTime &&
                         dentist?.workingHours?.endTime
-                          ? `${dentist.workingHours.startTime} - ${dentist.workingHours.endTime}`
+                          ? ` ${formatTime(dentist.workingHours.startTime)} -  ${formatTime(dentist.workingHours.endTime)}`
                           : "Not specified"}
                       </p>
                     </div>

@@ -49,8 +49,6 @@ class AppointmentController {
     }
   });
 
-  static rescheduleAppointment = asyncHandler(async (req, res, next) => {});
-
   static checkAvailability = asyncHandler(async (req, res, next) => {
     try {
       const { date, time, dentistId } = req.body;
@@ -98,6 +96,7 @@ class AppointmentController {
         dentist: dentistId,
         date: { $gte: formattedDate }, // Ensure date format matches DB
         timeSlot: time, // Ensure time field matches DB schema
+        status: { $ne: "Cancelled" },
       });
 
       if (existingAppointment) {

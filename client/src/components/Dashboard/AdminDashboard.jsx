@@ -28,7 +28,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import {
   useFetchAllAppointmentsQuery,
   useFetchAllUsersQuery,
-  useFetchAllPaymentsQuery
+  useFetchAllPaymentsQuery,
 } from "@/app/slices/adminApiSlice";
 import { useGetAllDentistsQuery } from "@/app/slices/dentistApiSlice";
 import { Link } from "react-router-dom";
@@ -40,13 +40,17 @@ function AdminDashboard() {
   const { data: userData, isLoading } = useFetchAllUsersQuery();
   const { data: appointmentData } = useFetchAllAppointmentsQuery();
   const { data: dentistData } = useGetAllDentistsQuery();
-  const {data: paymentData}= useFetchAllPaymentsQuery();
+  const { data: paymentData } = useFetchAllPaymentsQuery();
   const users = Array.isArray(userData?.users) ? userData.users : [];
   const recentUsers = [...users].reverse().slice(0, 4);
-  const appointments = Array.isArray(appointmentData?.appointments) ? appointmentData.appointments : [];
+  const appointments = Array.isArray(appointmentData?.appointments)
+    ? appointmentData.appointments
+    : [];
   const recentAppointments = [...appointments].reverse().slice(0, 4);
-  
-  const payments = Array.isArray(paymentData?.payments) ? paymentData.payments : [];
+
+  const payments = Array.isArray(paymentData?.payments)
+    ? paymentData.payments
+    : [];
   const recentPayments = [...payments].reverse().slice(0, 4);
   // Mock data - replace with actual API calls
 
@@ -62,17 +66,17 @@ function AdminDashboard() {
   };
 
   const financialStats = {
-    totalRevenue: recentPayments.reduce((sum, payment) => sum + payment.amount, 0),
+    totalRevenue: recentPayments.reduce(
+      (sum, payment) => sum + payment.amount,
+      0
+    ),
     monthlyRevenue: 15000,
     weeklyRevenue: 3500,
     todayRevenue: 750,
     pendingPayments: 2500,
     averageAppointmentValue: 180,
-    revenueGrowth: 12.5,
     totalRefunds: 500,
   };
-
-  
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -84,8 +88,8 @@ function AdminDashboard() {
         return "bg-red-100 text-red-800";
       case "pending":
         return "bg-yellow-100 text-yellow-800";
-      case 'Paid':
-        return "bg-green-100 text-green-800"
+      case "Paid":
+        return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -116,7 +120,6 @@ function AdminDashboard() {
               </Select>
             </div>
 
-            
             {/* Stats Overview */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <Card className="p-6">
@@ -131,9 +134,6 @@ function AdminDashboard() {
                     <div className="flex items-baseline gap-2">
                       <p className="text-2xl font-bold">
                         Rs.{financialStats.totalRevenue.toLocaleString()}
-                      </p>
-                      <p className="text-sm text-green-600">
-                        +{financialStats.revenueGrowth}%
                       </p>
                     </div>
                   </div>
@@ -188,7 +188,6 @@ function AdminDashboard() {
                       <p className="text-2xl font-bold">
                         {stats.totalAppointments}
                       </p>
-                      
                     </div>
                   </div>
                 </div>
@@ -232,7 +231,10 @@ function AdminDashboard() {
                       <div className="space-y-1">
                         <p className="font-medium">{payment.paidBy.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          Appointment Id: <strong className="text-green-800">{payment.appointment}</strong>
+                          Appointment Id:{" "}
+                          <strong className="text-green-800">
+                            {payment.appointment}
+                          </strong>
                         </p>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Calendar className="h-4 w-4" />
@@ -263,10 +265,10 @@ function AdminDashboard() {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold">Recent Appointments</h2>
                   <Link to="/admin/all-appointments">
-                  <Button variant="ghost" className="text-sm">
-                    View All
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
+                    <Button variant="ghost" className="text-sm">
+                      View All
+                      <ChevronRight className="ml-2 h-4 w-4" />
+                    </Button>
                   </Link>
                 </div>
                 <div className="space-y-4">
@@ -344,13 +346,12 @@ function AdminDashboard() {
                         {user.role}
                       </span>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Joined: {" "}
+                        Joined:{" "}
                         {new Date(user.createdAt).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
                         })}
-                        
                       </p>
                     </div>
                   </div>

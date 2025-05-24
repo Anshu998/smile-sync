@@ -4,7 +4,7 @@ const About = () => {
   const teamMembers = [
     {
       name: "Dr. Harry Mathew",
-      role: "UI Developer",
+      role: "General Dentist",
       description:
         "DIY tote bag drinking vinegar cronut adaptogen squid fannypack vaporware.",
       image:
@@ -12,7 +12,7 @@ const About = () => {
     },
     {
       name: "Dr. Sarah Tancredi",
-      role: "UI Developer",
+      role: "Orthodontist",
       description:
         "DIY tote bag drinking vinegar cronut adaptogen squid fannypack vaporware.",
       image:
@@ -20,7 +20,7 @@ const About = () => {
     },
     {
       name: "Dr. Saurav Tiwari",
-      role: "UI Developer",
+      role: "Periodontics",
       description:
         "DIY tote bag drinking vinegar cronut adaptogen squid fannypack vaporware.",
       image:
@@ -28,7 +28,7 @@ const About = () => {
     },
     {
       name: "Dr. Sumit Pandey",
-      role: "UI Developer",
+      role: "Endodontics",
       description:
         "DIY tote bag drinking vinegar cronut adaptogen squid fannypack vaporware.",
       image:

@@ -37,7 +37,7 @@ import DentistLayout from "./routes/DentistLayout";
 import AdminAllAppointments from "./components/Dashboard/AdminAllAppointments";
 import DentistDashboard from "./components/Dentist/DentistDashboard";
 import DentistPatients from "./components/Dentist/DentistPatients";
-
+import AdminProfilePage from "./pages/AdminProfilePage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -183,6 +183,14 @@ const router = createBrowserRouter([
         element: (
           <AdminLayout>
             <AdminAddDentist />
+          </AdminLayout>
+        ),
+      }, // Default admin dashboard
+      {
+        path: "profile",
+        element: (
+          <AdminLayout>
+            <AdminProfilePage />
           </AdminLayout>
         ),
       }, // Default admin dashboard

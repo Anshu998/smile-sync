@@ -56,7 +56,14 @@ export const adminApiSlice = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
-
+    adminUpdateProfile: builder.mutation({
+      query: (data) => ({
+        url: `${admin_url}/update-profile`,
+        method: "PUT",
+        body: data,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 

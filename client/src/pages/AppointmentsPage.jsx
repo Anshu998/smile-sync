@@ -42,61 +42,70 @@ const AppointmentCard = ({ appointment, refetch }) => {
     Completed: "bg-emerald-100 text-emerald-800",
     Failed: "bg-red-100 text-red-800",
   };
+
   const [payment, { isLoading }] = useInitiatePaymentMutation();
   const [paymentResult, setPaymentResult] = useState(null);
-  const [pidx, setPidx] = useState(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const hasHandledPayment = useRef(false);
+  const hasProcessedPayment = useRef(false);
   const [completePayment] = useCompletePaymentMutation();
 
   const handleCancelSuccess = () => {
     refetch();
   };
 
-  const completePaymentHandler = async (pidx) => {
-    try {
-      const purchaseOrderId = localStorage.getItem('appointmentId')
-      // console.log(purchaseOrderId);
-      const paymentData = await completePayment({ pidx, purchaseOrderId }).unwrap();
-      if (paymentData.success) {
-        setPaymentResult(paymentData);
-        setShowSuccessPopup(true);
+  const completePaymentHandler = useCallback(
+    async (pidx) => {
+      // Prevent duplicate calls
+      if (hasProcessedPayment.current) {
+        return;
       }
-      return;
-    } catch (error) {
-      toast.error(error?.data?.message || "Payment verification failed");
-    }
-  };
+
+      try {
+        hasProcessedPayment.current = true;
+
+        const purchaseOrderId = localStorage.getItem("appointmentId");
+        if (!purchaseOrderId) {
+          toast.error("Appointment ID not found");
+          return;
+        }
+
+        const paymentData = await completePayment({
+          pidx,
+          purchaseOrderId,
+        }).unwrap();
+
+        if (paymentData.success) {
+          setPaymentResult(paymentData);
+          setShowSuccessPopup(true);
+          // Clean up URL parameters after successful payment
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          );
+        } else {
+          toast.error(paymentData.message || "Payment verification failed");
+        }
+      } catch (error) {
+        toast.error(error?.data?.message || "Payment verification failed");
+      }
+    },
+    [completePayment]
+  );
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const pidxFromUrl = urlParams.get("pidx");
-    if (pidxFromUrl) {
-      setPidx(pidxFromUrl);
-    }
-    if (pidxFromUrl) {
-      // await completePayment()
+
+    // Only process payment if we have pidx and haven't processed it yet
+    if (pidxFromUrl && !hasProcessedPayment.current) {
       completePaymentHandler(pidxFromUrl);
     }
-    // if (localStorage.getItem("appointmentId")) {
-    //   return;
-    // } else {
-    //   localStorage.setItem("appointmentId", appointment._id);
-    // }
-  }, []);
-
-  // const {
-  //   data: paymentData,
-  //   isLoading: verifyLoading,
-  //   error: verifyError,
-  // } = useCompletePaymentQuery(pidx, {
-  //   skip: !pidx,
-  // });
+  }, []); // Empty dependency array to run only once
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
-      localStorage.setItem('appointmentId',data.purchaseOrderId)
+      localStorage.setItem("appointmentId", data.purchaseOrderId);
       const res = await payment(data).unwrap();
       if (res.success) {
         window.location.href = res?.payment_url;
@@ -106,47 +115,21 @@ const AppointmentCard = ({ appointment, refetch }) => {
     }
   };
 
-  // useEffect(() => {
-  //   const handlePayment = async () => {
-  //     if (!hasHandledPayment.current && paymentData) {
-  //       hasHandledPayment.current = true;
-
-  //       setPaymentResult(paymentData);
-
-  //       if (paymentData.success) {
-  //         // TODO: HIT another API TO make the data base call possible
-  //         // const response = await manageApplicationStatus({purchaseOrderId: appointment._id, })
-  //         setShowSuccessPopup(true);
-  //       } else {
-  //         toast.error(paymentData.message || "Payment Verification Failed");
-  //       }
-  //     }
-
-  //     if (!hasHandledPayment.current && verifyError) {
-  //       hasHandledPayment.current = true;
-
-  //       setPaymentResult({
-  //         success: false,
-  //         message: verifyError?.data?.message || "Verification failed",
-  //       });
-  //       toast.error(verifyError?.data?.message || "Verification failed");
-  //     }
-  //   };
-  //   handlePayment()
-  // }, [paymentData, verifyError]);
-
   const togglePopup = useCallback(() => {
     setShowSuccessPopup((prev) => !prev);
   }, []);
 
   const resetForm = useCallback(() => {
     setShowSuccessPopup(false);
-    // hasHandledPayment.current = false;
-    window.history.pushState({}, document.title, "/my-appointments");
-    refetch();
+    hasProcessedPayment.current = false; // Reset for future payments
+
+    // Clean up URL and localStorage
+    window.history.replaceState({}, document.title, "/my-appointments");
     localStorage.removeItem("appointmentId");
-    window.location.reload();
-  }, []);
+
+    // Refetch data instead of full page reload
+    refetch();
+  }, [refetch]);
 
   return (
     <Card className="mb-4 hover:shadow-lg transition-shadow duration-200">
@@ -330,6 +313,7 @@ const AppointmentCard = ({ appointment, refetch }) => {
 
 const MyAppointmentsPage = () => {
   const { data, isLoading, refetch } = useGetUserAppointmentsQuery();
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">

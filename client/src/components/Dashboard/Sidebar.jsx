@@ -9,7 +9,9 @@ import {
   Stethoscope,
   Bell,
   Users,
-  Wallet2Icon
+  Wallet2Icon,
+  User2Icon,
+  Users2Icon
 } from "lucide-react";
 import logo from '../../assets/logo.png'
 import { Button } from "@/components/ui/button";
@@ -31,7 +33,7 @@ const Sidebar = () => {
     { icon: CalendarClock, label: "Appointments", href: "/admin/all-appointments" },
     { icon: Stethoscope, label: "Dentists", href: "/admin/all-dentists" },
     { icon: Wallet2Icon , label: "Payments", href: "/admin/all-payments" },
-    { icon: Settings, label: "Settings", href: "/settings" },
+    { icon: Users2Icon, label: "Profile", href: "/admin/profile" },
   ];
 
   return (

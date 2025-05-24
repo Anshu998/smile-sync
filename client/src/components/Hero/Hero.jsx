@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default function HeroSectionSimpleCentred() {
-  const userData = useSelector((state) =>state.auth.isAuthenticated)
+  const userData = useSelector((state) => state.auth.isAuthenticated);
   // alert(userData)
   return (
     <>
@@ -19,7 +19,6 @@ export default function HeroSectionSimpleCentred() {
             filter: "brightness(0.3)", // Darkens the image for better contrast
           }}
         ></div>
-
 
         {/* Content */}
         <div className="relative z-[2] flex flex-col items-center justify-center h-full text-center text-white px-4">
@@ -62,20 +61,20 @@ export default function HeroSectionSimpleCentred() {
 
           {/* Buttons */}
           <div className="flex gap-3 justify-center">
-            <Link to={userData? "/new-appointment": "/register"}>
-            <Button size={"lg"} className="bg-teal-500 hover:bg-teal-600">
-              Book Now
-            </Button>
+            <Link to={userData ? "/all-doctors" : "/register"}>
+              <Button size={"lg"} className="bg-teal-500 hover:bg-teal-600">
+                Book Now
+              </Button>
             </Link>
-            <Link to={'/about'}>
-            <Button
-              size={"lg"}
-              variant={"outline"}
-              className="transition-all duration-150 bg-transparent text-white hover:border-white"
+            <Link to={"/about"}>
+              <Button
+                size={"lg"}
+                variant={"outline"}
+                className="transition-all duration-150 bg-transparent text-white hover:border-white"
               >
-              Learn more
-            </Button>
-              </Link>
+                Learn more
+              </Button>
+            </Link>
           </div>
 
           {/* Customer Reviews */}
